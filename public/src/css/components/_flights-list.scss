@@ -1,0 +1,26 @@
+.flights-list {
+  hr {
+    margin-top: 10px;
+  }
+
+  .label {
+    color: $grey-light;
+    margin: 0;
+  }
+
+  &__flight-title {
+    font-size: 30px;
+    margin-bottom: 5px;
+
+    small {
+      font-size: 20px;
+      color: $grey-light;
+    }
+  }
+
+  &__flight-price {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 30px;
+  }
+}

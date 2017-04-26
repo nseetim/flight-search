@@ -1,0 +1,36 @@
+<% layout('layout') -%>
+
+<main class="page">
+  <section class="hero is-light">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title has-text-centered">
+          find the best flight
+        </h1>
+        <form
+          class="search-form field has-addons"
+          onsubmit="return false;"
+        >
+          <div class="overlay"></div>
+          <p class="control">
+            <input class="input is-fullwidth" type="text" name="from" placeholder="FROM">
+          </p>
+          <p class="control">
+            <input class="input is-fullwidth" type="text" name="to" placeholder="TO">
+          </p>
+          <p class="control">
+            <input class="input is-fullwidth" type="filght-date" name="date" placeholder="DATE (MM-DD-YYYY)">
+          </p>
+          <p class="control">
+            <button class="button is-primary">
+              <i class="fa fa-search"></i>
+            </button>
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="search-results" class="container">
+  </section>
+</main>

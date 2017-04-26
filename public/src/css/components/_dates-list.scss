@@ -1,0 +1,25 @@
+.dates-list {
+
+  li {
+    margin-bottom: 5px;
+    padding: 2px 5px;
+  }
+
+  a {
+    color: $grey-light !important;
+    font-weight: bold;
+  }
+
+  .tag {
+    float: right;
+  }
+
+  &__selected {
+    background: $primary;
+    border-radius: $radius;
+    a {
+      color: white !important;
+    }
+  }
+
+}

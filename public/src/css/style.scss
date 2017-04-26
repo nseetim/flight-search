@@ -1,0 +1,48 @@
+@import '../../../node_modules/bulma/bulma';
+@import 'components/dates-list';
+@import 'components/flights-list';
+@import 'components/search-form';
+
+html {
+  overflow-x: auto;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page {
+  min-width: 900px;
+
+  section:not(:first-child) {
+    margin-top: 30px;
+    padding: 10px;
+  }
+
+  .hero {
+    border-bottom: 1px solid $grey-lighter;
+    border-top: 3px solid $primary;
+
+    .hero-body {
+      padding: 30px 0 45px 0;
+    }
+
+    .title {
+      color: rgba($grey, 0.5) !important;
+    }
+  }
+}
+
+#search-results {
+  display: flex;
+
+  .dates-list {
+    width: 200px;
+  }
+
+  .flights-list {
+    flex-grow: 1;
+    margin-right: 20px;
+  }
+}
