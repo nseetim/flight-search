@@ -38,7 +38,7 @@ controllers.forEach((controller) => {
   require(controller)(app); // eslint-disable-line
 });
 
-app.use((err, req, res) => {
+app.use((err, req, res, _next) => { // eslint-disable-line
   const status = err.status || 500;
   res.status(status);
 
@@ -46,7 +46,9 @@ app.use((err, req, res) => {
     log.error('An unexpected error occurred', err);
   }
 
-  if ((res.getHeader('Content-Type') || '').indexOf('application/json') >= 0) {
+  const wantsJson = (req.get('Accept') || '').indexOf('application/json') >= 0;
+  const receivingJson = (res.getHeader('Content-Type') || '').indexOf('application/json') >= 0;
+  if (wantsJson || receivingJson) {
     res.json({ message: (err.message || 'Internal Server Error'), status });
   } else {
     res.render('error', {
