@@ -51,7 +51,9 @@ function searchFlights(from, to, dates) {
     const selectedDate = availDates[0];
 
     elements.append(flightsList(flights[selectedDate]));
-    elements.append(datesList(availDates, selectedDate, dateClicked.bind(null, flights)));
+    elements.append(
+      datesList(availDates, selectedDate, dateClicked.bind(null, flights))
+    );
     $('#search-results').html(elements);
   }).catch((err) => {
     setFormLoadingState(false);
