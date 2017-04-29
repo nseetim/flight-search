@@ -1,6 +1,6 @@
 /**
- * Wrapper for the fetch api that providades a more easy
- * to use interface and error handling.
+ * Wrapper for the fetch api that providades a easier
+ * interface and error handling.
  */
 
 require('isomorphic-fetch');
