@@ -4,7 +4,7 @@ module.exports = (app) => {
   app.use('/search', (req, res, next) => {
     const from = req.query.from;
     const to = req.query.to;
-    const dates = req.query.dates;
+    const dates = req.query.dates.split(',');
     flightApi.searchFlights(dates, from, to).then((flights) => {
       res.json(flights);
     }).catch(next);

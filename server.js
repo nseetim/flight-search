@@ -38,6 +38,16 @@ controllers.forEach((controller) => {
   require(controller)(app); // eslint-disable-line
 });
 
+app.use((req, res, next) => {
+  if (req.path === '/') {
+    res.redirect('/index.html');
+    return;
+  }
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
 app.use((err, req, res, _next) => { // eslint-disable-line
   const status = err.status || 500;
   res.status(status);
