@@ -6,11 +6,8 @@ const log = bunyan.createLogger({
   level: config.logger.level
 });
 
-console.log(); // eslint-disable-line no-console
 ['trace', 'debug', 'info', 'warn', 'error'].forEach((level) => {
   log[level]('enabled');
 });
-console.log(); // eslint-disable-line no-console
-console.log(); // eslint-disable-line no-console
 
 module.exports = log;

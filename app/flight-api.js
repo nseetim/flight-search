@@ -19,9 +19,7 @@ function fetchAirports() {
 
 function searchFlights(dates, from, to) {
   const airlinesFetch = fetchAirlines();
-  const results = dates.reduce((indexedDates, date) => {
-    return Object.assign(indexedDates, { [date]: [] });
-  }, {});
+  const results = {};
 
   return airlinesFetch.then((airlines) => {
     return Promise.all(airlines.map((airline) => {
@@ -31,7 +29,9 @@ function searchFlights(dates, from, to) {
           urlFor(`flight_search/${airline.code}`),
           params
         ).then((flights) => {
-          results[date] = results[date].concat(flights);
+          results[date] = (results[date] || []).concat(flights);
+        }).catch((err) => {
+          if (err.status !== 404) throw err;
         });
       }));
     }));

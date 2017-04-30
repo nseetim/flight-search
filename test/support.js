@@ -1,5 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 require('isomorphic-fetch');
+const supertest = require('supertest');
+const express = require('express');
+const config = require('../app/config');
+
+const app = express();
+require('../app/config/express')(app, config);
 
 function fakeFetch(url) {
   const mockDef = fakeFetch.__mockDef;
@@ -21,8 +27,16 @@ fakeFetch.__mockDef = {};
 fakeFetch.mockRequest = (url, response) => {
   fakeFetch.__mockDef[url] = response;
 };
+fakeFetch.restore = () => {
+  fakeFetch.__mockDef = {};
+};
+
+function fakeServer() {
+  return supertest(app);
+}
 
 module.exports = {
-  fakeFetch
+  fakeFetch,
+  fakeServer
 };
 

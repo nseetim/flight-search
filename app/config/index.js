@@ -1,7 +1,7 @@
 const path = require('path');
 const bunyan = require('bunyan');
 
-const rootPath = path.normalize(path.join(__dirname, '/..'));
+const rootPath = path.normalize(path.join(__dirname, '/../..'));
 const env = process.env.NODE_ENV || 'development';
 
 const config = {
@@ -12,7 +12,8 @@ const config = {
       name: 'Flight Search App'
     },
     logger: {
-      level: 'debug'
+      level: 'debug',
+      morgan: 'dev'
     },
     port: process.env.PORT || 3000
   },
@@ -24,7 +25,8 @@ const config = {
       name: 'Flight Search App'
     },
     logger: {
-      level: bunyan.FATAL + 1 // Off
+      level: bunyan.FATAL + 1, // Off
+      morgan: 'off'
     },
     port: process.env.PORT || 3000
   },
@@ -36,7 +38,8 @@ const config = {
       name: 'Flight Search App'
     },
     logger: {
-      level: 'info'
+      level: 'info',
+      morgan: 'dev'
     },
     port: process.env.PORT || 3000
   }

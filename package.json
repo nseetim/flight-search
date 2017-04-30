@@ -15,7 +15,8 @@
     "start": "npm-run-all --parallel watch server",
     "start:prod": "cross-env NODE_ENV=production npm-run-all compile:prod server",
     "server": "node server.js | bunyan",
-    "test": "NODE_ENV=test mocha test/* --recursive"
+    "test": "NODE_ENV=test mocha test/* --recursive",
+    "test:watch": "NODE_ENV=test mocha -w test/* --recursive"
   },
   "dependencies": {
     "body-parser": "^1.13.3",
@@ -54,7 +55,7 @@
     "sass-loader": "^6.0.3",
     "simple-mock": "^0.7.3",
     "style-loader": "^0.16.1",
-    "supertest": "^2.0.0",
+    "supertest": "^2.0.1",
     "webpack": "^2.4.1"
   }
 }
