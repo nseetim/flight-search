@@ -17,22 +17,36 @@ function fetchAirports(city) {
   return httpGet(urlFor('airports'), { q: city });
 }
 
-function searchFlights(dates, from, to) {
-  const airlinesFetch = fetchAirlines();
-  const results = {};
+function doSearchFlights(airlineCode, date, from, to) {
+  const params = { date, from, to };
+  return httpGet(
+    urlFor(`flight_search/${airlineCode}`),
+    params
+  );
+}
 
-  return airlinesFetch.then((airlines) => {
-    return Promise.all(airlines.map((airline) => {
-      return Promise.all(dates.map((date) => {
-        const params = { date, from, to };
-        return httpGet(
-          urlFor(`flight_search/${airline.code}`),
-          params
-        ).then((flights) => {
-          results[date] = (results[date] || []).concat(flights);
-        }).catch((err) => {
-          if (err.status !== 404) throw err;
-        });
+function searchFlights(dates, from, to) {
+  const results = {};
+  const pall = arr => Promise.all(arr);
+
+  return pall([fetchAirlines(), fetchAirports(from), fetchAirports(to)])
+  .then(([airlines, origAirports, destAirports]) => {
+    return pall(airlines.map((airline) => {
+      return pall(origAirports.map((origAirport) => {
+        return pall(destAirports.map((destAirport) => {
+          return pall(dates.map((date) => {
+            return doSearchFlights(
+              airline.code,
+              date,
+              origAirport.airportCode,
+              destAirport.airportCode
+            ).then((flights) => {
+              results[date] = (results[date] || []).concat(flights);
+            }).catch((err) => {
+              if (err.status !== 404) throw err;
+            });
+          }));
+        }));
       }));
     }));
   })

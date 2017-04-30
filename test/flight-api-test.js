@@ -33,10 +33,10 @@ describe('Flight API', () => {
 
   it('fetches airports', (done) => {
     fakeFetch.mockRequest(flightApi.urlFor(`airports?q=${encodeURIComponent('São Paulo')}`), {
-      status: 200, body: fixtures.airports
+      status: 200, body: fixtures.airports['São Paulo']
     });
     flightApi.fetchAirports('São Paulo').then((airlines) => {
-      assert.deepEqual(airlines, fixtures.airports);
+      assert.deepEqual(airlines, fixtures.airports['São Paulo']);
       done();
     }).catch(done);
   });
@@ -45,51 +45,56 @@ describe('Flight API', () => {
     fakeFetch.mockRequest(flightApi.urlFor('airlines'), {
       status: 200, body: fixtures.airlines
     });
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2017-01-01&from=a&to=b'),
-      { status: 200, body: fixtures.flights['1']['2017-01-01'] }
-    );
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2017-01-02&from=a&to=b'),
-      { status: 200, body: fixtures.flights['1']['2017-01-02'] }
-    );
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2016-01-01&from=a&to=b'),
-      { status: 200, body: fixtures.flights['1']['2016-01-01'] }
-    );
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/2?date=2017-01-01&from=a&to=b'),
-      { status: 200, body: fixtures.flights['2']['2017-01-01'] }
-    );
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/2?date=2017-01-02&from=a&to=b'),
-      { status: 200, body: fixtures.flights['2']['2017-01-02'] }
-    );
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/2?date=2016-01-01&from=a&to=b'),
-      { status: 200, body: fixtures.flights['2']['2016-01-01'] }
-    );
+    fakeFetch.mockRequest(flightApi.urlFor(`airports?q=${encodeURIComponent('São Paulo')}`), {
+      status: 200, body: fixtures.airports['São Paulo']
+    });
+    fakeFetch.mockRequest(flightApi.urlFor('airports?q=Chicago'), {
+      status: 200, body: fixtures.airports.Chicago
+    });
+
+    const mockFlightSearch = (arlCode, date, from, to) => {
+      const fromTo = `${from}-${to}`;
+      const data = fixtures.flights[arlCode][date][fromTo];
+      fakeFetch.mockRequest(
+        flightApi.urlFor(`flight_search/${arlCode}?date=${date}&from=${from}&to=${to}`),
+        { status: data ? 200 : 404, body: data }
+      );
+    };
+
+    ['2017-01-01', '2017-01-02', '2016-01-01'].forEach((date) => {
+      ['1', '2'].forEach((arlCode) => {
+        mockFlightSearch(arlCode, date, 'ORD', 'CGH');
+        mockFlightSearch(arlCode, date, 'ORD', 'GRU');
+        mockFlightSearch(arlCode, date, 'MDW', 'CGH');
+        mockFlightSearch(arlCode, date, 'MDW', 'GRU');
+      });
+    });
 
     Promise.all([
-      flightApi.searchFlights(['2017-01-01', '2017-01-02'], 'a', 'b'),
-      flightApi.searchFlights(['2016-01-01'], 'a', 'b')
+      flightApi.searchFlights(['2017-01-01', '2017-01-02'], 'Chicago', 'São Paulo'),
+      flightApi.searchFlights(['2016-01-01'], 'Chicago', 'São Paulo')
     ]).then((results) => {
       assert.deepEqual(results[0], {
         '2017-01-01': [
           { key: 1, price: 100 },
           { key: 2, price: 200 },
-          { key: 5, price: 100 }
+          { key: 3, price: 100 },
+          { key: 4, price: 150 },
+          { key: 5, price: 150 },
+          { key: 10, price: 200 },
+          { key: 11, price: 200 },
         ],
         '2017-01-02': [
-          { key: 3, price: 50 },
-          { key: 6, price: 200 },
-          { key: 7, price: 50 }
+          { key: 6, price: 100 },
+          { key: 7, price: 150 },
+          { key: 12, price: 100 }
         ]
       });
       assert.deepEqual(results[1], {
         '2016-01-01': [
-          { key: 4, price: 200 },
-          { key: 8, price: 200 }
+          { key: 8, price: 150 },
+          { key: 9, price: 150 },
+          { key: 13, price: 150 }
         ]
       });
       done();
@@ -100,11 +105,17 @@ describe('Flight API', () => {
     fakeFetch.mockRequest(flightApi.urlFor('airlines'), {
       status: 200, body: fixtures.airlines
     });
+    fakeFetch.mockRequest(flightApi.urlFor(`airports?q=${encodeURIComponent('São Paulo')}`), {
+      status: 200, body: fixtures.airports['São Paulo']
+    });
+    fakeFetch.mockRequest(flightApi.urlFor('airports?q=Chicago'), {
+      status: 200, body: fixtures.airports.Chicago
+    });
     fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2017-01-01&from=a&to=b'),
-      { status: 200, body: fixtures.flights['1']['2017-01-01'] }
+      flightApi.urlFor('flight_search/1?date=2017-01-01&from=ORD&to=CGH'),
+      { status: 200, body: fixtures.flights['1']['2017-01-01']['ORD-CGH'] }
     );
-    flightApi.searchFlights(['2017-01-01', '2017-01-02'], 'a', 'b').then((flights) => {
+    flightApi.searchFlights(['2017-01-01', '2017-01-02'], 'Chicago', 'São Paulo').then((flights) => {
       assert.deepEqual(flights, {
         '2017-01-01': [
           { key: 1, price: 100 },

@@ -10,6 +10,15 @@ const fakeServer = support.fakeServer;
 describe('Controllers - Search', () => {
   beforeEach(() => {
     simple.mock(global, 'fetch', fakeFetch);
+    fakeFetch.mockRequest(flightApi.urlFor('airlines'), {
+      status: 200, body: fixtures.airlines
+    });
+    fakeFetch.mockRequest(flightApi.urlFor(`airports?q=${encodeURIComponent('São Paulo')}`), {
+      status: 200, body: fixtures.airports['São Paulo']
+    });
+    fakeFetch.mockRequest(flightApi.urlFor('airports?q=Chicago'), {
+      status: 200, body: fixtures.airports.Chicago
+    });
   });
 
   afterEach(() => {
@@ -18,28 +27,13 @@ describe('Controllers - Search', () => {
   });
 
   it('responds to /search', (done) => {
-    fakeFetch.mockRequest(flightApi.urlFor('airlines'), {
-      status: 200, body: fixtures.airlines
-    });
     fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2017-01-01&from=a&to=b'),
-      { status: 200, body: fixtures.flights['1']['2017-01-01'] }
-    );
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2017-01-02&from=a&to=b'),
-      { status: 200, body: fixtures.flights['1']['2017-01-02'] }
-    );
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2016-01-01&from=a&to=b'),
-      { status: 200, body: fixtures.flights['1']['2016-01-01'] }
-    );
-    fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/2?date=2017-01-01&from=a&to=b'),
-      { status: 200, body: fixtures.flights['2']['2017-01-01'] }
+      flightApi.urlFor('flight_search/1?date=2017-01-01&from=ORD&to=CGH'),
+      { status: 200, body: fixtures.flights['1']['2017-01-01']['ORD-CGH'] }
     );
     fakeServer()
     .get('/search')
-    .query({ from: 'a', to: 'b', dates: '2017-01-01,2017-01-02' })
+    .query({ from: 'Chicago', to: 'São Paulo', dates: '2017-01-01,2017-01-02' })
     .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
     .expect(200)
@@ -49,10 +43,6 @@ describe('Controllers - Search', () => {
         '2017-01-01': [
           { key: 1, price: 100 },
           { key: 2, price: 200 },
-          { key: 5, price: 100 }
-        ],
-        '2017-01-02': [
-          { key: 3, price: 50 }
         ]
       });
       done();
@@ -74,9 +64,6 @@ describe('Controllers - Search', () => {
   });
 
   it('returns 404 when no flights are found', (done) => {
-    fakeFetch.mockRequest(flightApi.urlFor('airlines'), {
-      status: 200, body: fixtures.airlines
-    });
     fakeServer()
     .get('/search')
     .query({ from: 'a', to: 'b', dates: '2017-01-01,2017-01-02' })
