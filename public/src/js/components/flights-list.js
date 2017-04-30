@@ -1,5 +1,15 @@
 import $ from 'jquery';
 
+function displayTime(timeInMinutes) {
+  let displayStr = '';
+  const hours = Math.floor(timeInMinutes / 60);
+  if (hours > 0) {
+    displayStr = `${hours}h `;
+  }
+  const minutes = timeInMinutes % 60;
+  return `${displayStr}${minutes}min`;
+}
+
 export default function render(flights) {
   const ul = $('<ul>', { class: 'flights-list' });
   flights.forEach((flight) => {
@@ -21,7 +31,7 @@ export default function render(flights) {
         <div class="column is-3 has-text-right">
           <h2 class="flights-list__flight-price">$${flight.price}</h2>
           <p class="label">Flight Time</p>
-          <p><strong>${flight.totalTime}</strong></p>
+          <p><strong>${displayTime(flight.totalTime)}</strong></p>
         </div>
       </li>
       <hr />`;
