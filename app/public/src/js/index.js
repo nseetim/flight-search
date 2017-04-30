@@ -2,7 +2,7 @@ import $ from 'jquery';
 import 'jquery-validation';
 import datesList from './components/dates-list';
 import flightsList from './components/flights-list';
-import { httpGet } from '../../../app/shared/http-client';
+import { httpGet } from '../../../shared/http-client';
 
 import '../css/style.scss';
 

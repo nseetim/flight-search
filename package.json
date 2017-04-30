@@ -11,7 +11,7 @@
     "compile": "webpack --progress --display-chunks",
     "compile:prod": "npm-run-all lint clean && webpack -p --progress",
     "watch": "webpack -w",
-    "clean": "rimraf public/dist",
+    "clean": "rimraf app/public/dist",
     "start": "npm-run-all --parallel watch server",
     "start:prod": "cross-env NODE_ENV=production npm-run-all compile:prod server",
     "server": "node server.js | bunyan",

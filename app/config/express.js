@@ -23,7 +23,7 @@ module.exports = (app, config) => {
   app.use(bodyParser.json());
   app.use(compress());
 
-  const serveStatics = express.static(path.join(config.root, '/public'));
+  const serveStatics = express.static(path.join(config.root, '/app/public'));
   app.use((req, res, next) => {
     if (/^\/src/.test(req.path)) {
       res.status(404).send(`${req.path} not found`);
