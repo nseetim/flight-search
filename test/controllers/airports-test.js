@@ -18,11 +18,12 @@ describe('Controllers - Airports', () => {
   });
 
   it('responds to /airports', (done) => {
-    fakeFetch.mockRequest(flightApi.urlFor('airports'), {
+    fakeFetch.mockRequest(flightApi.urlFor(`airports?q=${encodeURIComponent('São Paulo')}`), {
       status: 200, body: fixtures.airports
     });
     fakeServer()
     .get('/airports')
+    .query({ q: 'São Paulo' })
     .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
     .expect(200)
@@ -34,15 +35,24 @@ describe('Controllers - Airports', () => {
   });
 
   it("handles flight-api's errors correctly", (done) => {
-    fakeFetch.mockRequest(flightApi.urlFor('airports'), {
-      status: 500,
-      body: 'Server error'
+    fakeFetch.mockRequest(flightApi.urlFor(`airports?q=${encodeURIComponent('São Paulo')}`), {
+      status: 500, body: 'error'
     });
+    fakeServer()
+    .get('/airports')
+    .query({ q: 'São Paulo' })
+    .set('Accept', 'application/json')
+    .expect('Content-Type', /json/)
+    .expect(500)
+    .end(done);
+  });
+
+  it("returns 400 when the query parameter 'q' is not provided", (done) => {
     fakeServer()
     .get('/airports')
     .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
-    .expect(500)
+    .expect(400)
     .end(done);
   });
 });

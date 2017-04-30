@@ -13,8 +13,8 @@ function fetchAirlines() {
   return httpGet(urlFor('airlines'));
 }
 
-function fetchAirports() {
-  return httpGet(urlFor('airports'));
+function fetchAirports(city) {
+  return httpGet(urlFor('airports'), { q: city });
 }
 
 function searchFlights(dates, from, to) {

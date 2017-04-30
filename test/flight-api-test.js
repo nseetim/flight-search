@@ -32,10 +32,10 @@ describe('Flight API', () => {
   });
 
   it('fetches airports', (done) => {
-    fakeFetch.mockRequest(flightApi.urlFor('airports'), {
+    fakeFetch.mockRequest(flightApi.urlFor(`airports?q=${encodeURIComponent('São Paulo')}`), {
       status: 200, body: fixtures.airports
     });
-    flightApi.fetchAirports().then((airlines) => {
+    flightApi.fetchAirports('São Paulo').then((airlines) => {
       assert.deepEqual(airlines, fixtures.airports);
       done();
     }).catch(done);
