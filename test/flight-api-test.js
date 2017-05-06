@@ -61,7 +61,7 @@ describe('Flight API', () => {
       );
     };
 
-    ['2017-01-01', '2017-01-02', '2016-01-01'].forEach((date) => {
+    ['9999-01-01', '9999-01-02', '9998-01-01'].forEach((date) => {
       ['1', '2'].forEach((arlCode) => {
         mockFlightSearch(arlCode, date, 'ORD', 'CGH');
         mockFlightSearch(arlCode, date, 'ORD', 'GRU');
@@ -71,11 +71,11 @@ describe('Flight API', () => {
     });
 
     Promise.all([
-      flightApi.searchFlights(['2017-01-01', '2017-01-02'], 'Chicago', 'São Paulo'),
-      flightApi.searchFlights(['2016-01-01'], 'Chicago', 'São Paulo')
+      flightApi.searchFlights(['9999-01-01', '9999-01-02'], 'Chicago', 'São Paulo'),
+      flightApi.searchFlights(['9998-01-01'], 'Chicago', 'São Paulo')
     ]).then((results) => {
       assert.deepEqual(results[0], {
-        '2017-01-01': [
+        '9999-01-01': [
           { key: 1, price: 100 },
           { key: 2, price: 200 },
           { key: 3, price: 100 },
@@ -84,14 +84,14 @@ describe('Flight API', () => {
           { key: 10, price: 200 },
           { key: 11, price: 200 },
         ],
-        '2017-01-02': [
+        '9999-01-02': [
           { key: 6, price: 100 },
           { key: 7, price: 150 },
           { key: 12, price: 100 }
         ]
       });
       assert.deepEqual(results[1], {
-        '2016-01-01': [
+        '9998-01-01': [
           { key: 8, price: 150 },
           { key: 9, price: 150 },
           { key: 13, price: 150 }
@@ -112,12 +112,12 @@ describe('Flight API', () => {
       status: 200, body: fixtures.airports.Chicago
     });
     fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2017-01-01&from=ORD&to=CGH'),
-      { status: 200, body: fixtures.flights['1']['2017-01-01']['ORD-CGH'] }
+      flightApi.urlFor('flight_search/1?date=9999-01-01&from=ORD&to=CGH'),
+      { status: 200, body: fixtures.flights['1']['9999-01-01']['ORD-CGH'] }
     );
-    flightApi.searchFlights(['2017-01-01', '2017-01-02'], 'Chicago', 'São Paulo').then((flights) => {
+    flightApi.searchFlights(['9999-01-01', '9999-01-02'], 'Chicago', 'São Paulo').then((flights) => {
       assert.deepEqual(flights, {
-        '2017-01-01': [
+        '9999-01-01': [
           { key: 1, price: 100 },
           { key: 2, price: 200 }
         ]

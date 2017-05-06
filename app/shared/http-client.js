@@ -1,5 +1,5 @@
 /**
- * Wrapper for the fetch api that providades a easier
+ * Wrapper for the fetch api that provides an easier
  * interface and error handling.
  */
 
@@ -17,7 +17,12 @@ function checkStatus(response) {
   const error = new Error(response.statusText);
   error.status = response.status;
   error.response = response;
-  throw error;
+  return response.json().then((jsonErr) => {
+    error.details = jsonErr;
+    throw error;
+  }, () => {
+    throw error;
+  });
 }
 
 function parseJSON(response) {
@@ -31,8 +36,8 @@ function parseJSON(response) {
  * Issue a GET request to `path`
  *
  * @param {string} path the path/url
- * @param {object} params the request's params. They are sended in the query string.
- * @param {object} fetchOptions aditional options for the fetch API.
+ * @param {object} params the request's params. They are sent in the query string.
+ * @param {object} fetchOptions additional options for the fetch API.
  */
 function httpGet(path, params = {}, fetchOptions = {}) {
   const queryString = Object.keys(params).reduce((query, param, idx) => {

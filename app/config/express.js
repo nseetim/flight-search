@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const compress = require('compression');
 const engine = require('ejs-mate');
+const favicon = require('serve-favicon');
 const log = require('../logger');
 
 module.exports = (app, config) => {
@@ -16,6 +17,7 @@ module.exports = (app, config) => {
   app.engine('ejs', engine);
   app.set('views', path.join(config.root, '/app/views'));
   app.set('view engine', 'ejs');
+  app.use(favicon(path.join(config.root, '/favicon.png')));
 
   if (config.logger.morgan !== 'off') {
     app.use(morgan(config.logger.morgan));

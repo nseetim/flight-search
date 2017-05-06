@@ -394,6 +394,18 @@
       "from": "send@0.15.1",
       "resolved": "https://registry.npmjs.org/send/-/send-0.15.1.tgz"
     },
+    "serve-favicon": {
+      "version": "2.4.2",
+      "from": "serve-favicon@latest",
+      "resolved": "https://registry.npmjs.org/serve-favicon/-/serve-favicon-2.4.2.tgz",
+      "dependencies": {
+        "ms": {
+          "version": "1.0.0",
+          "from": "ms@1.0.0",
+          "resolved": "https://registry.npmjs.org/ms/-/ms-1.0.0.tgz"
+        }
+      }
+    },
     "serve-static": {
       "version": "1.12.1",
       "from": "serve-static@1.12.1",

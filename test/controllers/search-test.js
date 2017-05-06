@@ -28,19 +28,19 @@ describe('Controllers - Search', () => {
 
   it('responds to /search', (done) => {
     fakeFetch.mockRequest(
-      flightApi.urlFor('flight_search/1?date=2017-01-01&from=ORD&to=CGH'),
-      { status: 200, body: fixtures.flights['1']['2017-01-01']['ORD-CGH'] }
+      flightApi.urlFor('flight_search/1?date=9999-01-01&from=ORD&to=CGH'),
+      { status: 200, body: fixtures.flights['1']['9999-01-01']['ORD-CGH'] }
     );
     fakeServer()
     .get('/search')
-    .query({ from: 'Chicago', to: 'São Paulo', dates: '2017-01-01,2017-01-02' })
+    .query({ from: 'Chicago', to: 'São Paulo', dates: '9999-01-01,9999-01-02' })
     .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
     .expect(200)
     .end((err, resp) => {
       assert.equal(err, null);
       assert.deepEqual(resp.body, {
-        '2017-01-01': [
+        '9999-01-01': [
           { key: 1, price: 100 },
           { key: 2, price: 200 },
         ]
@@ -56,7 +56,7 @@ describe('Controllers - Search', () => {
     });
     fakeServer()
     .get('/search')
-    .query({ from: 'a', to: 'b', dates: '2017-01-01,2017-01-02' })
+    .query({ from: 'a', to: 'b', dates: '9999-01-01,9999-01-02' })
     .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
     .expect(500)
@@ -66,14 +66,14 @@ describe('Controllers - Search', () => {
   it('returns 404 when no flights are found', (done) => {
     fakeServer()
     .get('/search')
-    .query({ from: 'a', to: 'b', dates: '2017-01-01,2017-01-02' })
+    .query({ from: 'a', to: 'b', dates: '9999-01-01,9999-01-02' })
     .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
     .expect(404)
     .end(done);
   });
 
-  it('returns 400 when parameters are missing', (done) => {
+  describe('when invalid parameters are provided', () => {
     const doRequest = (params) => {
       return fakeServer()
       .get('/search')
@@ -83,15 +83,35 @@ describe('Controllers - Search', () => {
       .expect(400);
     };
 
-    Promise.all([
-      doRequest({ from: 'a' }),
-      doRequest({ to: 'b' }),
-      doRequest({ from: 'a', to: 'b' }),
-      doRequest({ from: 'a', dates: '2017-01-01' }),
-      doRequest({ to: 'a', dates: '2017-01-01' }),
-      doRequest({ dates: '2017-01-01' })
-    ])
-    .then(() => done())
-    .catch(done);
+    it('returns 400 when to, from or dates are missing', (done) => {
+      Promise.all([
+        doRequest({ from: 'a' }),
+        doRequest({ to: 'b' }),
+        doRequest({ from: 'a', to: 'b' }),
+        doRequest({ from: 'a', dates: '9999-01-01' }),
+        doRequest({ to: 'a', dates: '9999-01-01' }),
+        doRequest({ dates: '9999-01-01' })
+      ])
+      .then(() => done())
+      .catch(done);
+    });
+
+    it('returns 400 when an invalid date is provided', (done) => {
+      Promise.all([
+        doRequest({ from: 'a', to: 'b', dates: '201701-01,9999-01-01' }),
+        doRequest({ from: 'a', to: 'b', dates: '9999-40-01,9999-01-01' })
+      ])
+      .then(() => done())
+      .catch(done);
+    });
+
+    it('returns 400 when a date in the past is provided', (done) => {
+      Promise.all([
+        doRequest({ from: 'a', to: 'b', dates: '2017-01-01,9999-01-01' }),
+        doRequest({ from: 'a', to: 'b', dates: '9999-01-01,9999-01-01,2010-01-01' })
+      ])
+      .then(() => done())
+      .catch(done);
+    });
   });
 });

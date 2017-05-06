@@ -29,7 +29,7 @@ const airlines = [{
 
 const flights = {
   1: {
-    '2017-01-01': {
+    '9999-01-01': {
       'ORD-CGH': [
         { key: 1, price: 100 },
         { key: 2, price: 200 },
@@ -44,7 +44,7 @@ const flights = {
         { key: 5, price: 150 }
       ]
     },
-    '2017-01-02': {
+    '9999-01-02': {
       'ORD-CGH': [
         { key: 6, price: 100 },
       ],
@@ -52,7 +52,7 @@ const flights = {
         { key: 7, price: 150 }
       ]
     },
-    '2016-01-01': {
+    '9998-01-01': {
       'MDW-CGH': [
         { key: 8, price: 150 },
         { key: 9, price: 150 }
@@ -60,7 +60,7 @@ const flights = {
     }
   },
   2: {
-    '2017-01-01': {
+    '9999-01-01': {
       'ORD-CGH': [
         { key: 10, price: 200 },
       ],
@@ -68,12 +68,12 @@ const flights = {
         { key: 11, price: 200 }
       ]
     },
-    '2017-01-02': {
+    '9999-01-02': {
       'ORD-CGH': [
         { key: 12, price: 100 },
       ]
     },
-    '2016-01-01': {
+    '9998-01-01': {
       'ORD-GRU': [
         { key: 13, price: 150 },
       ]
